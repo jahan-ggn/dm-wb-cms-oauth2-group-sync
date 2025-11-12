@@ -1,0 +1,3 @@
+en:
+  site_settings:
+    dm_WB_CMS_oauth2_group_sync_enabled: "Enable automatic WB CMS → Discourse group sync"

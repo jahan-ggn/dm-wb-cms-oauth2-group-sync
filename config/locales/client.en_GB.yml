@@ -1,0 +1,10 @@
+en_GB:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          dm_wb_cms_oauth2_group_sync: "DM WB CMS Oauth2 Group Sync"
+  js:
+    dm_wb_cms_oauth2_group_sync:
+      title: DM WB CMS Oauth2 Group Sync
+      admin_navigation: DM WB CMS Oauth2 Group Sync

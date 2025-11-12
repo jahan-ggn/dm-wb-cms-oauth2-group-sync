@@ -1,0 +1,4 @@
+dm_wb_cms_oauth2_group_sync:
+  dm_WB_CMS_oauth2_group_sync_enabled:
+    default: false
+    client: true
