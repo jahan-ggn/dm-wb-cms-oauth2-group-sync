@@ -62,7 +62,7 @@ after_initialize do
 
       def log_groups_missing
         return unless SiteSetting.oauth2_debug_auth
-        Rails.logger.debug <<-LOG
+        Rails.logger.warn <<-LOG
           [WB CMS] Group Sync: required groups missing.
           - #{INSIDER_GROUP}: #{Group.exists?(name: INSIDER_GROUP)}
           - #{NON_INSIDER_GROUP}: #{Group.exists?(name: NON_INSIDER_GROUP)}
@@ -73,7 +73,7 @@ after_initialize do
       def log_sync_result(user, before, after, active)
         return unless SiteSetting.oauth2_debug_auth
         status_str = active ? "ACTIVE (status=1)" : "INACTIVE/NONE (status!=1 or missing)"
-        Rails.logger.debug <<-LOG
+        Rails.logger.warn <<-LOG
           [WB CMS] Group Sync Applied
           User: #{user.username} (id=#{user.id})
           Subscription: #{status_str}
@@ -94,7 +94,7 @@ after_initialize do
       data[:wb_user] = wb_user if wb_user
 
       if SiteSetting.oauth2_debug_auth
-        Rails.logger.debug(wb_user ? "[WB CMS] extra: wb_user extracted" : "[WB CMS] extra: wb_user missing in token params")
+        Rails.logger.warn(wb_user ? "[WB CMS] extra: wb_user extracted" : "[WB CMS] extra: wb_user missing in token params")
       end
 
       data
@@ -104,7 +104,7 @@ after_initialize do
   if defined?(::OmniAuth::Strategies::Oauth2Basic)
     ::OmniAuth::Strategies::Oauth2Basic.prepend(::WbCmsOauth2BasicExtraPatch)
   else
-    Rails.logger.debug("[WB CMS] Strategy Oauth2Basic not found — cannot patch extra()") if SiteSetting.oauth2_debug_auth
+    Rails.logger.warn("[WB CMS] Strategy Oauth2Basic not found — cannot patch extra()") if SiteSetting.oauth2_debug_auth
   end
 
   module ::WbCmsAfterAuthenticateGroupSync
@@ -134,14 +134,14 @@ after_initialize do
     private
 
     def log_info(message)
-      Rails.logger.debug("[WB CMS] #{message}") if SiteSetting.oauth2_debug_auth
+      Rails.logger.warn("[WB CMS] #{message}") if SiteSetting.oauth2_debug_auth
     end
   end
 
   if defined?(::OAuth2BasicAuthenticator)
     ::OAuth2BasicAuthenticator.prepend(::WbCmsAfterAuthenticateGroupSync)
   else
-    Rails.logger.debug("[WB CMS] OAuth2BasicAuthenticator not found — cannot patch after_authenticate()") if SiteSetting.oauth2_debug_auth
+    Rails.logger.warn("[WB CMS] OAuth2BasicAuthenticator not found — cannot patch after_authenticate()") if SiteSetting.oauth2_debug_auth
   end
 
   on(:user_created) do |user|
@@ -154,6 +154,6 @@ after_initialize do
     ::WbCmsGroupSync.sync_user(user, wb_user)
     PluginStore.remove(::DmWbCmsOauth2GroupSync::STORE_KEY, "pending_#{email}")
 
-    Rails.logger.debug("[WB CMS] Applied cached wb_user after signup for #{user.username} (#{email})") if SiteSetting.oauth2_debug_auth
+    Rails.logger.warn("[WB CMS] Applied cached wb_user after signup for #{user.username} (#{email})") if SiteSetting.oauth2_debug_auth
   end
 end
